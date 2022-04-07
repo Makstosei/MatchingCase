@@ -40,31 +40,27 @@ public class SelectManager : MonoBehaviour
                 
                 if (Mathf.Abs(Distance.x) >= Mathf.Abs(Distance.y))
                 {
-                    if (Distance.x < -swipeRange && selectedObject.GetComponent<SpawnedItem>().rightItem != null )
+                    if (Distance.x < -swipeRange && selectedObject.GetComponent<SpawnedItem>().rightItem != null && selectedObject.GetComponent<SpawnedItem>().rightItem.GetComponent<SpawnedItem>().CategoryId!=0)//categoryid mevcut halde bozulma olmamasý icin
                     {
                         moving = true;
-                        Debug.Log("Right");
                         selectedObject.GetComponent<SpawnedItem>().moveRight();
                     }
-                    else if (Distance.x > swipeRange && selectedObject.GetComponent<SpawnedItem>().leftItem != null)
+                    else if (Distance.x > swipeRange && selectedObject.GetComponent<SpawnedItem>().leftItem != null && selectedObject.GetComponent<SpawnedItem>().leftItem.GetComponent<SpawnedItem>().CategoryId != 0)
                     {
                         moving = true;
-                        Debug.Log("Left");
                         selectedObject.GetComponent<SpawnedItem>().moveLeft();
                     }
                 }
                 else
                 {
-                    if (Distance.y < -swipeRange && selectedObject.GetComponent<SpawnedItem>().upItem != null)
+                    if (Distance.y < -swipeRange && selectedObject.GetComponent<SpawnedItem>().upItem != null && selectedObject.GetComponent<SpawnedItem>().upItem.GetComponent<SpawnedItem>().CategoryId != 0)
                     {
                         moving = true;
-                        Debug.Log("Up");
                         selectedObject.GetComponent<SpawnedItem>().moveUp();
                     }
-                    else if (Distance.y > swipeRange && selectedObject.GetComponent<SpawnedItem>().downItem != null)
+                    else if (Distance.y > swipeRange && selectedObject.GetComponent<SpawnedItem>().downItem != null && selectedObject.GetComponent<SpawnedItem>().downItem.GetComponent<SpawnedItem>().CategoryId != 0)
                     {
                         moving = true;
-                        Debug.Log("Down");
                         selectedObject.GetComponent<SpawnedItem>().moveDown();
                     }
                 }

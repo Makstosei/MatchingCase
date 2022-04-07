@@ -6,6 +6,7 @@ using DG.Tweening;
 
 public class SpawnedItem : MonoBehaviour
 {
+    public int ItemId;
     public int CategoryId;
     public int ColumnId;
     public int ColumnPosition;
@@ -13,12 +14,40 @@ public class SpawnedItem : MonoBehaviour
     private int tempColumnID, tempColumnPosition;
     private GameObject tempLeft, tempRight, tempUp, tempDown;
     private Transform tempParent;
-    public List<Spawner.ColumnClass> Columns;
     public float switchingTime = 0.5f;
+    public Sprite blank;
+    public List<GameObject> matchedItemsVertical;
+    public List<GameObject> matchedItemsHorizontonal;
+    public List<Spawner.ColumnClass> Columns;
+    public bool ismatchingFound;
+    private int moveID;
+
+    private void OnEnable()
+    {
+        EventManager.onGameStart += GameStartingEvent;
+
+    }
+
+    private void OnDisable()
+    {
+        EventManager.onGameStart -= GameStartingEvent;
+    }
+
+
+    void GameStartingEvent()
+    {
+        CheckVerticalMatchedItems();
+        CheckHorizontonalMatchedItems();
+    }
+
+
+
 
 
     public void moveLeft()
     {
+        moveID = 1;
+        ClearList();
         Columns = GameObject.Find("GameManager").GetComponent<Spawner>().Columns;
         SpawnedItem tempItemInfo = leftItem.GetComponent<SpawnedItem>();
         CopyValuesToTemp();
@@ -85,6 +114,8 @@ public class SpawnedItem : MonoBehaviour
     }
     public void moveRight()
     {
+        moveID = 2;
+        ClearList();
         Columns = GameObject.Find("GameManager").GetComponent<Spawner>().Columns;
         SpawnedItem tempItemInfo = rightItem.GetComponent<SpawnedItem>();
         CopyValuesToTemp();
@@ -154,6 +185,8 @@ public class SpawnedItem : MonoBehaviour
 
     public void moveDown()
     {
+        moveID = 3;
+        ClearList();
         Columns = GameObject.Find("GameManager").GetComponent<Spawner>().Columns;
         SpawnedItem tempItemInfo = downItem.GetComponent<SpawnedItem>();
         CopyValuesToTemp();
@@ -214,7 +247,6 @@ public class SpawnedItem : MonoBehaviour
         }
 
 
-
         //GameManager column List Update just in case.
         Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]");
         Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]");
@@ -223,6 +255,8 @@ public class SpawnedItem : MonoBehaviour
 
     public void moveUp()
     {
+        moveID = 4;
+        ClearList();
         Columns = GameObject.Find("GameManager").GetComponent<Spawner>().Columns;
         SpawnedItem tempItemInfo = upItem.GetComponent<SpawnedItem>();
         CopyValuesToTemp();
@@ -281,7 +315,6 @@ public class SpawnedItem : MonoBehaviour
             upItem.GetComponent<SpawnedItem>().downItem = tempItemInfo.upItem;
         }
 
-
         //GameManager column List Update just in case.
         Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]");
         Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]");
@@ -290,12 +323,57 @@ public class SpawnedItem : MonoBehaviour
 
     IEnumerator Reset()
     {
-        yield return new WaitForSecondsRealtime(switchingTime + .2f);
-        FindObjectOfType<SelectManager>().moving = false;
+      
+        if (leftItem != null)
+        {
+            leftItem.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
+            leftItem.GetComponent<SpawnedItem>().CheckHorizontonalMatchedItems();
+        }
+        if (rightItem != null)
+        {
+            rightItem.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
+            rightItem.GetComponent<SpawnedItem>().CheckHorizontonalMatchedItems();
+        }
+        if (upItem != null)
+        {
+            upItem.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
+            upItem.GetComponent<SpawnedItem>().CheckHorizontonalMatchedItems();
+        }
+        if (downItem != null)
+        {
+            downItem.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
+            downItem.GetComponent<SpawnedItem>().CheckHorizontonalMatchedItems();
+        }
+        if (tempDown != null)
+        {
+            tempDown.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
+            tempDown.GetComponent<SpawnedItem>().CheckHorizontonalMatchedItems();
+        }
+        if (tempUp != null)
+        {
+            tempUp.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
+            tempUp.GetComponent<SpawnedItem>().CheckHorizontonalMatchedItems();
+        }
+        if (tempLeft != null)
+        {
+            tempLeft.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
+            tempLeft.GetComponent<SpawnedItem>().CheckHorizontonalMatchedItems();
+        }
+        if (tempRight != null)
+        {
+            tempRight.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
+            tempRight.GetComponent<SpawnedItem>().CheckHorizontonalMatchedItems();
+        }
+
+        CheckAll();
+
+
+        yield return new WaitForSecondsRealtime(switchingTime);
 
     }
 
 
+    //inside movings before take temp values of this item
     void CopyValuesToTemp()
     {
         tempColumnID = ColumnId;
@@ -307,4 +385,259 @@ public class SpawnedItem : MonoBehaviour
         tempParent = gameObject.transform.parent;
     }
 
+    public void CheckAll()
+    {      
+        CheckVerticalMatchedItems();
+        CheckHorizontonalMatchedItems();
+        StartCoroutine(DestroyOnMatch());
+    }
+
+
+    public void CheckVerticalMatchedItems()
+    {
+        if (upItem != null)
+        {
+            if (upItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsVertical.Contains(upItem))
+            {
+                matchedItemsVertical.Add(upItem);
+                if (!matchedItemsVertical.Contains(this.gameObject))
+                {
+                    matchedItemsVertical.Add(this.gameObject);
+                }
+                foreach (var item in upItem.GetComponent<SpawnedItem>().matchedItemsVertical)
+                {
+                    if (!matchedItemsVertical.Contains(item))
+                    {
+                        matchedItemsVertical.Add(item);
+                        item.GetComponent<SpawnedItem>().matchedItemsVertical.Add(this.gameObject);
+                    }
+                }
+            }
+        }
+        if (downItem != null)
+        {
+            if (downItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsVertical.Contains(downItem))
+            {
+                matchedItemsVertical.Add(downItem);
+                if (!matchedItemsVertical.Contains(this.gameObject))
+                {
+                    matchedItemsVertical.Add(this.gameObject);
+                }
+                foreach (var item in downItem.GetComponent<SpawnedItem>().matchedItemsVertical)
+                {
+                    if (!matchedItemsVertical.Contains(item))
+                    {
+                        matchedItemsVertical.Add(item);
+                        item.GetComponent<SpawnedItem>().matchedItemsVertical.Add(this.gameObject);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void CheckHorizontonalMatchedItems()
+    {
+        if (leftItem != null)
+        {
+            if (leftItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsHorizontonal.Contains(leftItem))
+            {
+                matchedItemsHorizontonal.Add(leftItem);
+                if (!matchedItemsHorizontonal.Contains(this.gameObject))
+                {
+                    matchedItemsHorizontonal.Add(this.gameObject);
+
+                }
+                foreach (var item in leftItem.GetComponent<SpawnedItem>().matchedItemsHorizontonal)
+                {
+                    if (!matchedItemsHorizontonal.Contains(item))
+                    {
+                        matchedItemsHorizontonal.Add(item);
+                        item.GetComponent<SpawnedItem>().matchedItemsHorizontonal.Add(this.gameObject);
+                    }
+                }
+            }
+        }
+        if (rightItem != null)
+        {
+            if (rightItem.GetComponent<SpawnedItem>().CategoryId == CategoryId)
+            {
+                if (!matchedItemsHorizontonal.Contains(rightItem))
+                {
+                    matchedItemsHorizontonal.Add(rightItem);
+                    if (!matchedItemsHorizontonal.Contains(this.gameObject))
+                    {
+                        matchedItemsHorizontonal.Add(this.gameObject);
+                    }
+                    foreach (var item in rightItem.GetComponent<SpawnedItem>().matchedItemsHorizontonal)
+                    {
+                        if (!matchedItemsHorizontonal.Contains(item))
+                        {
+                            matchedItemsHorizontonal.Add(item);
+                            item.GetComponent<SpawnedItem>().matchedItemsHorizontonal.Add(this.gameObject);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    IEnumerator DestroyOnMatch()
+    {
+        yield return new WaitForSecondsRealtime(.5f);
+        if (matchedItemsVertical.Count >= 3)
+        {
+            ismatchingFound = true;
+            foreach (var item in matchedItemsVertical)
+            {
+                if (item != null && item != this.gameObject)
+                {
+                    item.GetComponent<SpawnedItem>().ismatchingFound = true;
+                    item.GetComponent<SpriteRenderer>().sprite = blank;
+                    item.GetComponent<SpawnedItem>().CategoryId = 0;
+                }
+            }
+        }
+
+        if (matchedItemsHorizontonal.Count >= 3)
+        {
+            ismatchingFound = true;
+            foreach (var item in matchedItemsHorizontonal)
+            {
+                if (item != null && item != this.gameObject)
+                {
+                    item.GetComponent<SpawnedItem>().ismatchingFound = true;
+                    item.GetComponent<SpriteRenderer>().sprite = blank;
+                    item.GetComponent<SpawnedItem>().CategoryId = 0;
+                }
+            }
+        }
+        if (ismatchingFound)
+        {
+            gameObject.GetComponent<SpriteRenderer>().sprite = blank;
+            gameObject.GetComponent<SpawnedItem>().CategoryId = 0;
+
+            switch (moveID)
+            {
+                case 1:
+                    if (rightItem != null)
+                    {
+                        rightItem.GetComponent<SpawnedItem>().CheckAll();
+                        moveID = 0;
+                    }
+                    break;
+                case 2:
+                    if (leftItem != null)
+                    {
+                        leftItem.GetComponent<SpawnedItem>().CheckAll();
+                        moveID = 0;
+                    }
+
+                    break;
+                case 3:
+                    if (upItem != null)
+                    {
+                        upItem.GetComponent<SpawnedItem>().CheckAll();
+                        moveID = 0;
+                    }
+
+                    break;
+                case 4:
+                    if (downItem != null)
+                    {
+                        downItem.GetComponent<SpawnedItem>().CheckAll();
+                        moveID = 0;
+                    }
+                    break;
+
+
+                default:
+                    break;
+            }
+        }
+        else if (!ismatchingFound)
+        {
+            switch (moveID)
+            {
+                case 1:
+                    if (rightItem != null)
+                    {
+                        if (!rightItem.GetComponent<SpawnedItem>().ismatchingFound)
+                        {
+                            moveRight();
+                            moveID = 0;
+                        }
+                    }
+                    break;
+                case 2:
+                    if (leftItem != null)
+                    {
+                        if (!leftItem.GetComponent<SpawnedItem>().ismatchingFound)
+                        {
+                            moveLeft();
+                            moveID = 0;
+                        }
+                    }
+
+                    break;
+                case 3:
+                    if (upItem != null)
+                    {
+                        if (!upItem.GetComponent<SpawnedItem>().ismatchingFound)
+                        {
+                            moveUp();
+                            moveID = 0;
+                        }
+                    }
+
+                    break;
+                case 4:
+                    if (downItem != null)
+                    {
+                        if (!downItem.GetComponent<SpawnedItem>().ismatchingFound)
+                        {
+                            moveDown();
+                            moveID = 0;
+                        }
+                    }
+                    break;
+
+
+                default:
+                    break;
+            }
+
+
+        }
+
+        FindObjectOfType<SelectManager>().moving = false;
+    }
+
+
+
+    public void ClearList()
+    {
+        matchedItemsVertical.Clear();
+        matchedItemsHorizontonal.Clear();
+    }
+
+
+
+    public void AddHorizontonalMatchedItems(GameObject matchedItemref)
+    {
+        foreach (var item in matchedItemref.GetComponent<SpawnedItem>().matchedItemsHorizontonal)
+        {
+            matchedItemsHorizontonal.Add(item);
+        }
+    }
+
+    public void AddVerticalMatchedItems(GameObject matchedItemref)
+    {
+        foreach (var item in matchedItemref.GetComponent<SpawnedItem>().matchedItemsVertical)
+        {
+            matchedItemsVertical.Add(item);
+        }
+    }
 }

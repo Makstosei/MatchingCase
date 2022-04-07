@@ -96,13 +96,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 014216afab1b47546933a3a858fd2901, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemId: 0
   CategoryId: 1
-  Rowid: 0
-  RowPosition: 0
-  previousItem: {fileID: 0}
-  nextitem: {fileID: 0}
-  upitem: {fileID: 0}
-  downitem: {fileID: 0}
+  ColumnId: 0
+  ColumnPosition: 0
+  leftItem: {fileID: 0}
+  rightItem: {fileID: 0}
+  upItem: {fileID: 0}
+  downItem: {fileID: 0}
+  switchingTime: 0.5
+  blank: {fileID: 21300000, guid: f02c06796e2c4e44fbe0cc86d6d96ecd, type: 3}
+  matchedItemsVertical: []
+  matchedItemsHorizontonal: []
+  affectingObject: {fileID: 0}
 --- !u!61 &5726393011820875719
 BoxCollider2D:
   m_ObjectHideFlags: 0

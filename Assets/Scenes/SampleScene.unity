@@ -362,6 +362,7 @@ GameObject:
   - component: {fileID: 1172813396}
   - component: {fileID: 1172813397}
   - component: {fileID: 1172813395}
+  - component: {fileID: 1172813398}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -382,10 +383,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ObjectstoSpawn:
-  - {fileID: 8025292849988412715, guid: c2b22cd5a520bed499faa0083ed11c44, type: 3}
   - {fileID: 9180009092842931232, guid: 90cb54e2339379d4a99f0f82b0b09ee6, type: 3}
   - {fileID: 9158690723910895489, guid: 12f5cd4db703f5c4886e88e2dbce822b, type: 3}
   - {fileID: 3733484262434762293, guid: 6ff76f1201f0703429ef59428a565869, type: 3}
+  - {fileID: 8025292849988412715, guid: c2b22cd5a520bed499faa0083ed11c44, type: 3}
   xLenght: 8
   Ylenght: 8
   SpawnedObjectParent: {fileID: 1096282403}
@@ -420,6 +421,18 @@ MonoBehaviour:
   tapRange: 5
   selectedObject: {fileID: 0}
   moving: 0
+--- !u!114 &1172813398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172813394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fa36062c7754434599a9838fda686a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1527744748
 GameObject:
   m_ObjectHideFlags: 3
