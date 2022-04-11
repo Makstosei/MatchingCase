@@ -10,24 +10,30 @@ public class SpawnedItem : MonoBehaviour
     public int CategoryId;
     public int ColumnId;
     public int ColumnPosition;
-    public GameObject leftItem, rightItem, upItem, downItem;
-    private int tempColumnID, tempColumnPosition;
-    private GameObject tempLeft, tempRight, tempUp, tempDown;
+    public SpawnedItem leftItem, rightItem, upItem, downItem;
+    public List<SpawnedItem> matchedItemsVertical;
+    public List<SpawnedItem> matchedItemsHorizontonal;
+
+
+
+    private int tempItemId,tempCategoryId,tempColumnID, tempColumnPosition;
+    private SpawnedItem tempLeft, tempRight, tempUp, tempDown;
     private Transform tempParent;
-    public float switchingTime = 0.5f;
     public Sprite blank;
-    public List<GameObject> matchedItemsVertical;
-    public List<GameObject> matchedItemsHorizontonal;
+
+
+
     public List<Spawner.ColumnClass> Columns;
     public bool ismatchingFound;
     private int moveID;
+    public float switchingTime = 0.5f;
+
+
 
     private void OnEnable()
     {
         EventManager.onGameStart += GameStartingEvent;
-
     }
-
     private void OnDisable()
     {
         EventManager.onGameStart -= GameStartingEvent;
@@ -36,14 +42,9 @@ public class SpawnedItem : MonoBehaviour
 
     void GameStartingEvent()
     {
-        CheckVerticalMatchedItems();
-        CheckHorizontonalMatchedItems();
+        //CheckVerticalMatchedItems();
+        //CheckHorizontonalMatchedItems();
     }
-
-
-
-
-
     public void moveLeft()
     {
         moveID = 1;
@@ -108,8 +109,8 @@ public class SpawnedItem : MonoBehaviour
         }
 
         //GameManager column List Update just in case.
-        Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]");
-        Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]");
+        Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]").GetComponent<SpawnedItem>();
+        Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]").GetComponent<SpawnedItem>();
         StartCoroutine(Reset());
     }
     public void moveRight()
@@ -177,8 +178,8 @@ public class SpawnedItem : MonoBehaviour
         }
 
         //GameManager column List Update just in case.
-        Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]");
-        Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]");
+        Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]").GetComponent<SpawnedItem>();
+        Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]").GetComponent<SpawnedItem>();
         StartCoroutine(Reset());
 
     }
@@ -248,8 +249,8 @@ public class SpawnedItem : MonoBehaviour
 
 
         //GameManager column List Update just in case.
-        Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]");
-        Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]");
+        Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]").GetComponent<SpawnedItem>();
+        Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]").GetComponent<SpawnedItem>();
         StartCoroutine(Reset());
     }
 
@@ -316,14 +317,14 @@ public class SpawnedItem : MonoBehaviour
         }
 
         //GameManager column List Update just in case.
-        Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]");
-        Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]");
+        Columns[ColumnId].Column[ColumnPosition] = GameObject.Find("[" + (ColumnId) + "," + (ColumnPosition) + "]").GetComponent<SpawnedItem>();
+        Columns[tempColumnID].Column[tempColumnPosition] = GameObject.Find("[" + (tempColumnID) + "," + (tempColumnPosition) + "]").GetComponent<SpawnedItem>();
         StartCoroutine(Reset());
     }
 
     IEnumerator Reset()
     {
-      
+
         if (leftItem != null)
         {
             leftItem.GetComponent<SpawnedItem>().CheckVerticalMatchedItems();
@@ -374,8 +375,10 @@ public class SpawnedItem : MonoBehaviour
 
 
     //inside movings before take temp values of this item
-    void CopyValuesToTemp()
+    public void CopyValuesToTemp()
     {
+        tempItemId = ItemId;
+        tempCategoryId = CategoryId;
         tempColumnID = ColumnId;
         tempColumnPosition = ColumnPosition;
         tempLeft = leftItem;
@@ -385,8 +388,10 @@ public class SpawnedItem : MonoBehaviour
         tempParent = gameObject.transform.parent;
     }
 
+
+
     public void CheckAll()
-    {      
+    {
         CheckVerticalMatchedItems();
         CheckHorizontonalMatchedItems();
         StartCoroutine(DestroyOnMatch());
@@ -397,38 +402,38 @@ public class SpawnedItem : MonoBehaviour
     {
         if (upItem != null)
         {
-            if (upItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsVertical.Contains(upItem))
+            if (upItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsVertical.Contains(upItem.GetComponent<SpawnedItem>()))
             {
-                matchedItemsVertical.Add(upItem);
-                if (!matchedItemsVertical.Contains(this.gameObject))
+                matchedItemsVertical.Add(upItem.GetComponent<SpawnedItem>());
+                if (!matchedItemsVertical.Contains(this.GetComponent<SpawnedItem>()))
                 {
-                    matchedItemsVertical.Add(this.gameObject);
+                    matchedItemsVertical.Add(this.GetComponent<SpawnedItem>());
                 }
                 foreach (var item in upItem.GetComponent<SpawnedItem>().matchedItemsVertical)
                 {
                     if (!matchedItemsVertical.Contains(item))
                     {
                         matchedItemsVertical.Add(item);
-                        item.GetComponent<SpawnedItem>().matchedItemsVertical.Add(this.gameObject);
+                        item.GetComponent<SpawnedItem>().matchedItemsVertical.Add(this.GetComponent<SpawnedItem>());
                     }
                 }
             }
         }
         if (downItem != null)
         {
-            if (downItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsVertical.Contains(downItem))
+            if (downItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsVertical.Contains(downItem.GetComponent<SpawnedItem>()))
             {
-                matchedItemsVertical.Add(downItem);
-                if (!matchedItemsVertical.Contains(this.gameObject))
+                matchedItemsVertical.Add(downItem.GetComponent<SpawnedItem>());
+                if (!matchedItemsVertical.Contains(this.GetComponent<SpawnedItem>()))
                 {
-                    matchedItemsVertical.Add(this.gameObject);
+                    matchedItemsVertical.Add(this.GetComponent<SpawnedItem>());
                 }
                 foreach (var item in downItem.GetComponent<SpawnedItem>().matchedItemsVertical)
                 {
                     if (!matchedItemsVertical.Contains(item))
                     {
                         matchedItemsVertical.Add(item);
-                        item.GetComponent<SpawnedItem>().matchedItemsVertical.Add(this.gameObject);
+                        item.GetComponent<SpawnedItem>().matchedItemsVertical.Add(this.GetComponent<SpawnedItem>());
                     }
                 }
             }
@@ -440,12 +445,12 @@ public class SpawnedItem : MonoBehaviour
     {
         if (leftItem != null)
         {
-            if (leftItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsHorizontonal.Contains(leftItem))
+            if (leftItem.GetComponent<SpawnedItem>().CategoryId == CategoryId && !matchedItemsHorizontonal.Contains(leftItem.GetComponent<SpawnedItem>()))
             {
-                matchedItemsHorizontonal.Add(leftItem);
-                if (!matchedItemsHorizontonal.Contains(this.gameObject))
+                matchedItemsHorizontonal.Add(leftItem.GetComponent<SpawnedItem>());
+                if (!matchedItemsHorizontonal.Contains(this.GetComponent<SpawnedItem>()))
                 {
-                    matchedItemsHorizontonal.Add(this.gameObject);
+                    matchedItemsHorizontonal.Add(this.GetComponent<SpawnedItem>());
 
                 }
                 foreach (var item in leftItem.GetComponent<SpawnedItem>().matchedItemsHorizontonal)
@@ -453,7 +458,7 @@ public class SpawnedItem : MonoBehaviour
                     if (!matchedItemsHorizontonal.Contains(item))
                     {
                         matchedItemsHorizontonal.Add(item);
-                        item.GetComponent<SpawnedItem>().matchedItemsHorizontonal.Add(this.gameObject);
+                        item.GetComponent<SpawnedItem>().matchedItemsHorizontonal.Add(this.GetComponent<SpawnedItem>());
                     }
                 }
             }
@@ -462,19 +467,19 @@ public class SpawnedItem : MonoBehaviour
         {
             if (rightItem.GetComponent<SpawnedItem>().CategoryId == CategoryId)
             {
-                if (!matchedItemsHorizontonal.Contains(rightItem))
+                if (!matchedItemsHorizontonal.Contains(rightItem.GetComponent<SpawnedItem>()))
                 {
-                    matchedItemsHorizontonal.Add(rightItem);
-                    if (!matchedItemsHorizontonal.Contains(this.gameObject))
+                    matchedItemsHorizontonal.Add(rightItem.GetComponent<SpawnedItem>());
+                    if (!matchedItemsHorizontonal.Contains(this.GetComponent<SpawnedItem>()))
                     {
-                        matchedItemsHorizontonal.Add(this.gameObject);
+                        matchedItemsHorizontonal.Add(this.GetComponent<SpawnedItem>());
                     }
                     foreach (var item in rightItem.GetComponent<SpawnedItem>().matchedItemsHorizontonal)
                     {
                         if (!matchedItemsHorizontonal.Contains(item))
                         {
                             matchedItemsHorizontonal.Add(item);
-                            item.GetComponent<SpawnedItem>().matchedItemsHorizontonal.Add(this.gameObject);
+                            item.GetComponent<SpawnedItem>().matchedItemsHorizontonal.Add(this.GetComponent<SpawnedItem>());
                         }
                     }
                 }
@@ -484,7 +489,7 @@ public class SpawnedItem : MonoBehaviour
 
 
 
-    IEnumerator DestroyOnMatch()
+    public IEnumerator DestroyOnMatch()
     {
         yield return new WaitForSecondsRealtime(.5f);
         if (matchedItemsVertical.Count >= 3)

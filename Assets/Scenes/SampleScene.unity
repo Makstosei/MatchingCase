@@ -363,6 +363,7 @@ GameObject:
   - component: {fileID: 1172813397}
   - component: {fileID: 1172813395}
   - component: {fileID: 1172813398}
+  - component: {fileID: 1172813399}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -433,6 +434,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fa36062c7754434599a9838fda686a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1172813399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172813394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dc93ace3983a0d4f8c86790528a2aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blank: {fileID: 21300000, guid: f02c06796e2c4e44fbe0cc86d6d96ecd, type: 3}
+  switchingTime: 0.5
+  destroyedObjectsList: []
+  effecterItemId: 0
+  effecterCategoryId: 0
+  effecterColumnId: 0
+  effecterColumnPosition: 0
+  effecterleftItem: {fileID: 0}
+  effecterrightItem: {fileID: 0}
+  effecterupItem: {fileID: 0}
+  effecterdownItem: {fileID: 0}
+  effecterParent: {fileID: 0}
+  effecterPosition: {x: 0, y: 0, z: 0}
+  effectedItemId: 0
+  effectedCategoryId: 0
+  effectedColumnId: 0
+  effectedColumnPosition: 0
+  effectedleftItem: {fileID: 0}
+  effectedrightItem: {fileID: 0}
+  effectedupItem: {fileID: 0}
+  effecteddownItem: {fileID: 0}
+  effectedParent: {fileID: 0}
+  effectedPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &1527744748
 GameObject:
   m_ObjectHideFlags: 3

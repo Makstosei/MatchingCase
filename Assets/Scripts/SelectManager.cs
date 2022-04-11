@@ -10,7 +10,7 @@ public class SelectManager : MonoBehaviour
     private Vector3 currentPos;
     public int swipeRange;
     public float tapRange;
-    public GameObject selectedObject;
+    public SpawnedItem selectedObject;
     public bool moving;
 
     private void Awake()
@@ -40,28 +40,28 @@ public class SelectManager : MonoBehaviour
                 
                 if (Mathf.Abs(Distance.x) >= Mathf.Abs(Distance.y))
                 {
-                    if (Distance.x < -swipeRange && selectedObject.GetComponent<SpawnedItem>().rightItem != null && selectedObject.GetComponent<SpawnedItem>().rightItem.GetComponent<SpawnedItem>().CategoryId!=0)//categoryid mevcut halde bozulma olmamasý icin
+                    if (Distance.x < -swipeRange && selectedObject.rightItem != null )
                     {
                         moving = true;
-                        selectedObject.GetComponent<SpawnedItem>().moveRight();
+                        EventManager.Instance.MoveItems(selectedObject, selectedObject.rightItem, 2, false);
                     }
-                    else if (Distance.x > swipeRange && selectedObject.GetComponent<SpawnedItem>().leftItem != null && selectedObject.GetComponent<SpawnedItem>().leftItem.GetComponent<SpawnedItem>().CategoryId != 0)
+                    else if (Distance.x > swipeRange && selectedObject.leftItem != null)
                     {
                         moving = true;
-                        selectedObject.GetComponent<SpawnedItem>().moveLeft();
+                        EventManager.Instance.MoveItems(selectedObject, selectedObject.leftItem, 1, false);
                     }
                 }
                 else
                 {
-                    if (Distance.y < -swipeRange && selectedObject.GetComponent<SpawnedItem>().upItem != null && selectedObject.GetComponent<SpawnedItem>().upItem.GetComponent<SpawnedItem>().CategoryId != 0)
+                    if (Distance.y < -swipeRange && selectedObject.upItem != null)
                     {
                         moving = true;
-                        selectedObject.GetComponent<SpawnedItem>().moveUp();
+                        EventManager.Instance.MoveItems(selectedObject, selectedObject.upItem, 4, false);
                     }
-                    else if (Distance.y > swipeRange && selectedObject.GetComponent<SpawnedItem>().downItem != null && selectedObject.GetComponent<SpawnedItem>().downItem.GetComponent<SpawnedItem>().CategoryId != 0)
+                    else if (Distance.y > swipeRange && selectedObject.downItem != null)
                     {
                         moving = true;
-                        selectedObject.GetComponent<SpawnedItem>().moveDown();
+                        EventManager.Instance.MoveItems(selectedObject, selectedObject.downItem, 3, false);
                     }
                 }
 
@@ -83,7 +83,7 @@ public class SelectManager : MonoBehaviour
     }
 
 
-    GameObject TryHit()
+    SpawnedItem TryHit()
     {
         Vector3 touchPostoWorldpos = Camera.main.ScreenToWorldPoint(firstPressPos);
         Vector2 touchPosWorld2D = new Vector2(touchPostoWorldpos.x, touchPostoWorldpos.y);
@@ -92,7 +92,7 @@ public class SelectManager : MonoBehaviour
         if (hitinformation.collider != null)
         {
             GameObject touchedObject = hitinformation.transform.gameObject;
-            return touchedObject;
+            return touchedObject.GetComponent<SpawnedItem>();
         }
         else { return null; }
     }

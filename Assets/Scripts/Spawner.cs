@@ -30,7 +30,7 @@ public class Spawner : MonoBehaviour
 
         for (int i = 1; i < Ylenght + 1; i++)
         {
-            GameObject tempgameobj = new GameObject("Column " + i);
+            GameObject tempgameobj = new GameObject("Column " + (i-1));
             tempgameobj.transform.parent = SpawnedObjectParent.transform;
             Columns.Add(new ColumnClass());
 
@@ -45,16 +45,16 @@ public class Spawner : MonoBehaviour
                 spawnedObj.GetComponent<SpawnedItem>().ColumnPosition = x - 1;
                 ItemIdCounter++;
                 spawnedObj.GetComponent<SpawnedItem>().ItemId = ItemIdCounter;
-                Columns[i - 1].Column.Add(spawnedObj);
+                Columns[i - 1].Column.Add(spawnedObj.GetComponent<SpawnedItem>());
                 if (x > 1)
                 {
-                    spawnedObj.GetComponent<SpawnedItem>().downItem = Columns[i - 1].Column[x - 2].gameObject;
-                    Columns[i - 1].Column[x - 2].GetComponent<SpawnedItem>().upItem = spawnedObj;
+                    spawnedObj.GetComponent<SpawnedItem>().downItem = Columns[i - 1].Column[x - 2];
+                    Columns[i - 1].Column[x - 2].GetComponent<SpawnedItem>().upItem = spawnedObj.GetComponent<SpawnedItem>();
                 }
                 if (i > 1)
                 {
-                    spawnedObj.GetComponent<SpawnedItem>().leftItem = Columns[i - 2].Column[x - 1].gameObject;
-                    Columns[i - 2].Column[x - 1].GetComponent<SpawnedItem>().rightItem = spawnedObj;
+                    spawnedObj.GetComponent<SpawnedItem>().leftItem = Columns[i - 2].Column[x - 1];
+                    Columns[i - 2].Column[x - 1].GetComponent<SpawnedItem>().rightItem = spawnedObj.GetComponent<SpawnedItem>();
                 }
             }
         }
@@ -154,6 +154,6 @@ public class Spawner : MonoBehaviour
     {
         [HideInInspector]
         public string FontName = "";
-        public List<GameObject> Column = new List<GameObject>();
+        public List<SpawnedItem> Column = new List<SpawnedItem>();
     }
 }

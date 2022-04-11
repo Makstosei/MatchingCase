@@ -22,7 +22,7 @@ public class EventManager : MonoBehaviour
 
     public static Action onGameStart;
     public static Action onUpdateItems;
-
+    public static Action<SpawnedItem, SpawnedItem, int,bool> onMoveItems;//(1:left - 2:right - 3: down - 4:up)
 
     public void GameStart()
     {
@@ -32,6 +32,11 @@ public class EventManager : MonoBehaviour
     public void UpdateItems()
     {
         onUpdateItems.Invoke();
+    }
+
+    public void MoveItems(SpawnedItem effecter,SpawnedItem effected,int moveDirection,bool isReverse)
+    {
+        onMoveItems.Invoke(effecter, effected, moveDirection,isReverse);
     }
 
 }
