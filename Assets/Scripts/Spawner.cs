@@ -1,41 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 [System.Serializable]
 public class Spawner : MonoBehaviour
 {
     public List<GameObject> ObjectstoSpawn;
-    public int xLenght = 8, Ylenght = 8;
+    public int YLenght = 8, XLenght = 8;
     public GameObject SpawnedObjectParent;
     public List<ColumnClass> Columns;
     private int ItemIdCounter;
+    public List<string> UpdateColumnIdList = new List<string>();
 
     private void OnEnable()
     {
-        EventManager.onUpdateItems += UpdateItemsEvent;
+        EventManager.onSomeObjectsDestroyed += UpdateItemsPositionsEvent;
     }
 
     private void OnDisable()
     {
-        EventManager.onUpdateItems -= UpdateItemsEvent;
+        EventManager.onSomeObjectsDestroyed -= UpdateItemsPositionsEvent;
     }
 
 
 
     private void Awake()
     {
+        StartCoroutine(SpawnItems());
+    }
 
-        Columns = new List<ColumnClass>(Ylenght);
+    IEnumerator SpawnItems()
+    {
 
-        for (int i = 1; i < Ylenght + 1; i++)
+        Columns = new List<ColumnClass>(XLenght);
+
+        for (int i = 1; i < XLenght + 1; i++)
         {
-            GameObject tempgameobj = new GameObject("Column " + (i-1));
+            GameObject tempgameobj = new GameObject("Column " + (i - 1));
             tempgameobj.transform.parent = SpawnedObjectParent.transform;
             Columns.Add(new ColumnClass());
 
-            for (int x = 1; x < xLenght + 1; x++)
+            for (int x = 1; x < YLenght + 1; x++)
             {
+                yield return new WaitForSecondsRealtime(.01f);
                 Vector3 SpawnPosition = new Vector3(1.5f * i, 1.5f * x, 0);
                 int random = GenerateRandomInt(i, x);
                 var spawnedObj = Instantiate(ObjectstoSpawn[random], SpawnPosition, Quaternion.identity);
@@ -60,8 +67,6 @@ public class Spawner : MonoBehaviour
         }
         EventManager.Instance.GameStart();
     }
-
-
 
 
     int GenerateRandomInt(int Columnid, int ColumnPosition)
@@ -122,31 +127,57 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    void UpdateItemsEvent()
+    void UpdateItemsPositionsEvent(List<SpawnedItem> DestroyedObjects)
     {
-        //foreach (var column in Columns)
-        //{
-        //    foreach (var item in column.Column)
-        //    {
-        //        if (Columns[item.GetComponent<SpawnedItem>().ColumnId - 1] != null && Columns[item.GetComponent<SpawnedItem>().ColumnId - 1].Column[item.GetComponent<SpawnedItem>().ColumnPosition] != null)
-        //        {
-        //            item.GetComponent<SpawnedItem>().leftItem = Columns[item.GetComponent<SpawnedItem>().ColumnId - 1].Column[item.GetComponent<SpawnedItem>().ColumnPosition];
-        //        }
-        //        if (Columns[item.GetComponent<SpawnedItem>().ColumnId + 1].Column[item.GetComponent<SpawnedItem>().ColumnPosition] != null)
-        //        {
-        //            item.GetComponent<SpawnedItem>().rightItem = Columns[item.GetComponent<SpawnedItem>().ColumnId + 1].Column[item.GetComponent<SpawnedItem>().ColumnPosition];
-        //        }
-        //        if (Columns[item.GetComponent<SpawnedItem>().ColumnId].Column[item.GetComponent<SpawnedItem>().ColumnPosition + 1] != null)
-        //        {
-        //            item.GetComponent<SpawnedItem>().upItem = Columns[item.GetComponent<SpawnedItem>().ColumnId].Column[item.GetComponent<SpawnedItem>().ColumnPosition + 1];
-        //        }
-        //        if (Columns[item.GetComponent<SpawnedItem>().ColumnId].Column[item.GetComponent<SpawnedItem>().ColumnPosition - 1] != null)
-        //        {
-        //            item.GetComponent<SpawnedItem>().downItem = Columns[item.GetComponent<SpawnedItem>().ColumnId].Column[item.GetComponent<SpawnedItem>().ColumnPosition - 1];
-        //        }
-        //    }
-        //}
+        CheckColumnsItemsCount(DestroyedObjects);
     }
+
+    void CheckColumnsItemsCount(List<SpawnedItem> DestroyedObjects)
+    {
+        UpdateColumnIdList.Clear();
+        foreach (var item in DestroyedObjects)
+        {
+            Columns[item.ColumnId].Column.Remove(item);
+            Destroy(item);         
+        }
+
+        CheckAndUpdatePositions();
+    }
+
+    void CheckAndUpdatePositions()
+    {
+        foreach (var itemList in Columns)
+        {
+            if (itemList.Column.Count<YLenght)
+            {
+                foreach (var spawnedItem in itemList.Column)
+                {
+                    int columnId = Columns.IndexOf(itemList);
+                    int itemId = Columns[columnId].Column.IndexOf(spawnedItem);
+                    Vector3 newPosition = new Vector3(1.5f + 1.5f *columnId, 1.5f + 1.5f *itemId, 0);
+                    spawnedItem.transform.DOMove(newPosition, 1f);
+                }
+
+
+            }
+
+
+
+           
+
+           
+        }
+
+        FindObjectOfType<SelectManager>().moving = false;
+
+    }
+
+
+
+
+
+
+
 
 
     [System.Serializable]

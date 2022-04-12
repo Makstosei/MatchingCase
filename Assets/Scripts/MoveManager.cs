@@ -16,7 +16,7 @@ public class MoveManager : MonoBehaviour
     public int effecterCategoryId;
     public int effecterColumnId;
     public int effecterColumnPosition;
-    public SpawnedItem effecterleftItem, effecterrightItem, effecterupItem, effecterdownItem,effecterTemp;
+    public SpawnedItem effecterleftItem, effecterrightItem, effecterupItem, effecterdownItem, effecterTemp;
     public Transform effecterParent;
     public Vector3 effecterPosition;
 
@@ -24,7 +24,7 @@ public class MoveManager : MonoBehaviour
     public int effectedCategoryId;
     public int effectedColumnId;
     public int effectedColumnPosition;
-    public SpawnedItem effectedleftItem, effectedrightItem, effectedupItem, effecteddownItem,effectedTemp;
+    public SpawnedItem effectedleftItem, effectedrightItem, effectedupItem, effecteddownItem, effectedTemp;
     public Transform effectedParent;
     public Vector3 effectedPosition;
     private void OnEnable()
@@ -88,14 +88,12 @@ public class MoveManager : MonoBehaviour
 
     void MoveItems(SpawnedItem effecter, SpawnedItem effected, int moveDirection, bool isReverse)
     {
-        Debug.Log("MoveItems");
         GetTempValuesEffecter(effecter);
         GetTempValuesEffected(effected);
         Columns = GameObject.Find("GameManager").GetComponent<Spawner>().Columns;
         SetValuesEffecter(effecter);
         SetValuesEffected(effected);
-        effecter.ClearList();
-        effected.ClearList();
+
         effecter.transform.DOMove(effectedPosition, switchingTime);
         effected.transform.DOMove(effecterPosition, switchingTime);
 
@@ -112,35 +110,38 @@ public class MoveManager : MonoBehaviour
                 effected.transform.DOBlendableRotateBy(new Vector3(0, 360, 0), switchingTime, RotateMode.LocalAxisAdd);
                 effecter.rightItem = effected;
                 effected.leftItem = effecter;
+
+                effecter.leftItem = effectedleftItem;
+                effecter.downItem = effecteddownItem;
+                effecter.upItem = effectedupItem;
+
+                effected.rightItem = effecterrightItem;
+                effected.downItem = effecterdownItem;
+                effected.upItem = effecterupItem;
+
                 if (effectedleftItem != null)
                 {
-                    effecter.leftItem = effectedleftItem;
                     effectedleftItem.rightItem = effecter;
                 }
                 if (effecteddownItem != null)
                 {
-                    effecter.downItem = effecteddownItem;
                     effecteddownItem.upItem = effecter;
                 }
-                if (effecter.upItem != null)
+                if (effectedupItem != null)
                 {
-                    effecter.upItem = effecteddownItem;
                     effectedupItem.downItem = effecter;
                 }
 
-                if (effecteddownItem != null)
+                if (effecterrightItem != null)
                 {
-                    effected.rightItem = effecterrightItem;
                     effecterrightItem.leftItem = effected;
                 }
-                if (effecteddownItem != null)
+                if (effecterdownItem != null)
                 {
-                    effected.downItem = effecteddownItem;
                     effecterdownItem.upItem = effected;
                 }
-                if (effecteddownItem != null)
+                if (effecterupItem != null)
                 {
-                    effected.upItem = effecteddownItem;
                     effecterupItem.downItem = effected;
                 }
                 break;
@@ -149,35 +150,38 @@ public class MoveManager : MonoBehaviour
                 effected.transform.DOBlendableRotateBy(new Vector3(0, 360, 0), switchingTime, RotateMode.LocalAxisAdd);
                 effecter.leftItem = effected;
                 effected.rightItem = effecter;
+
+                effecter.rightItem = effectedrightItem;
+                effecter.downItem = effecteddownItem;
+                effecter.upItem = effectedupItem;
+
+                effected.leftItem = effecterleftItem;
+                effected.downItem = effecterdownItem;
+                effected.upItem = effecterupItem;
+
                 if (effectedrightItem != null)
                 {
-                    effecter.rightItem = effectedrightItem;
                     effectedrightItem.leftItem = effecter;
                 }
                 if (effecteddownItem != null)
                 {
-                    effecter.downItem = effecteddownItem;
                     effecteddownItem.upItem = effecter;
                 }
                 if (effectedupItem != null)
                 {
-                    effecter.upItem = effectedupItem;
                     effectedupItem.downItem = effecter;
                 }
 
                 if (effecterleftItem != null)
                 {
-                    effected.leftItem = effecterleftItem;
                     effecterleftItem.rightItem = effected;
                 }
                 if (effecterdownItem != null)
                 {
-                    effected.downItem = effecterdownItem;
                     effecterdownItem.upItem = effected;
                 }
                 if (effecterupItem != null)
                 {
-                    effected.upItem = effecterupItem;
                     effecterupItem.downItem = effected;
                 }
                 break;
@@ -186,35 +190,38 @@ public class MoveManager : MonoBehaviour
                 effected.transform.DOBlendableRotateBy(new Vector3(360, 0, 0), switchingTime, RotateMode.LocalAxisAdd);
                 effecter.upItem = effected;
                 effected.downItem = effecter;
+
+                effecter.leftItem = effectedleftItem;
+                effecter.rightItem = effectedrightItem;
+                effecter.downItem = effecteddownItem;
+
+                effected.rightItem = effecterrightItem;
+                effected.leftItem = effecterleftItem;
+                effected.upItem = effecterupItem;
+
                 if (effectedleftItem != null)
                 {
-                    effecter.leftItem = effectedleftItem;
                     effectedleftItem.rightItem = effecter;
                 }
                 if (effectedrightItem != null)
                 {
-                    effecter.rightItem = effectedrightItem;
                     effectedrightItem.leftItem = effecter;
                 }
                 if (effecteddownItem != null)
                 {
-                    effecter.downItem = effecteddownItem;
                     effecteddownItem.upItem = effecter;
                 }
 
                 if (effecterrightItem != null)
                 {
-                    effected.rightItem = effecterrightItem;
                     effecterrightItem.leftItem = effected;
                 }
                 if (effecterleftItem != null)
                 {
-                    effected.leftItem = effecterleftItem;
                     effecterleftItem.rightItem = effected;
                 }
                 if (effecterupItem != null)
                 {
-                    effected.upItem = effecterupItem;
                     effecterupItem.downItem = effected;
                 }
                 break;
@@ -223,154 +230,67 @@ public class MoveManager : MonoBehaviour
                 effected.transform.DOBlendableRotateBy(new Vector3(360, 0, 0), switchingTime, RotateMode.LocalAxisAdd);
                 effecter.downItem = effected;
                 effected.upItem = effecter;
+
+                effecter.leftItem = effectedleftItem;
+                effecter.rightItem = effectedrightItem;
+                effecter.upItem = effectedupItem;
+
+                effected.rightItem = effecterrightItem;
+                effected.leftItem = effecterleftItem;
+                effected.downItem = effecterdownItem;
+
                 if (effectedleftItem != null)
                 {
-                    effecter.leftItem = effectedleftItem;
                     effectedleftItem.rightItem = effecter;
                 }
                 if (effectedrightItem != null)
                 {
-                    effecter.rightItem = effectedrightItem;
                     effectedrightItem.leftItem = effecter;
                 }
                 if (effectedupItem != null)
                 {
-                    effecter.upItem = effectedupItem;
                     effectedupItem.downItem = effecter;
                 }
 
                 if (effecterrightItem != null)
                 {
-                    effected.rightItem = effecterrightItem;
                     effecterrightItem.leftItem = effected;
                 }
                 if (effecterleftItem != null)
                 {
-                    effected.leftItem = effecterleftItem;
                     effecterleftItem.rightItem = effected;
                 }
                 if (effecterdownItem != null)
                 {
-                    effected.downItem = effecterdownItem;
                     effecterdownItem.upItem = effected;
                 }
                 break;
             default:
                 break;
         }
-
-        CheckMatches(effecter, effected, isReverse);
+        CheckMatches(effecter, effected, moveDirection, isReverse);
     }
 
 
-    void CheckMatches(SpawnedItem effecter, SpawnedItem effected, bool isReverse)
+    void CheckMatches(SpawnedItem effecter, SpawnedItem effected, int moveDirection, bool isReverse)
     {
-        if (effecter.leftItem != null && effecter.leftItem.CategoryId == effecter.CategoryId)
-        {
-            if (!effecter.matchedItemsHorizontonal.Contains(effecter.leftItem))
-            {
-                effecter.matchedItemsHorizontonal.Add(effecter.leftItem);
-            }
-            if (effecter.leftItem.leftItem != null && effecter.leftItem.leftItem.CategoryId == effecter.CategoryId)
-            {
-                if (!effecter.matchedItemsHorizontonal.Contains(effecter.leftItem.leftItem))
-                {
-                    effecter.matchedItemsHorizontonal.Add(effecter.leftItem.leftItem);
-                }
-            }
-            if (!effecter.matchedItemsHorizontonal.Contains(effecter))
-            {
-                effecter.matchedItemsHorizontonal.Add(effecter);
-            }
-        }
-        if (effecter.rightItem != null && effecter.rightItem.CategoryId == effecter.CategoryId)
-        {
-            if (!effecter.matchedItemsHorizontonal.Contains(effecter.rightItem))
-            {
-                effecter.matchedItemsHorizontonal.Add(effecter.rightItem);
-            }
 
-            if (effecter.rightItem.rightItem != null && effecter.rightItem.rightItem.CategoryId == effecter.CategoryId)
-            {
-                if (!effecter.matchedItemsHorizontonal.Contains(effecter.rightItem.rightItem))
-                {
-                    effecter.matchedItemsHorizontonal.Add(effecter.rightItem.rightItem);
-                }
-            }
-            if (!effecter.matchedItemsHorizontonal.Contains(effecter))
-            {
-                effecter.matchedItemsHorizontonal.Add(effecter);
-            }
-        }
+        effecter.CheckMatcedItems(effecter.matchedItemsVerticalList, effecter.matchedItemsHorizontonalList);
+        effected.CheckMatcedItems(effected.matchedItemsVerticalList, effected.matchedItemsHorizontonalList);
 
-
-        if (effecter.upItem != null && effecter.upItem.CategoryId == effecter.CategoryId)
-        {
-            if (!effecter.matchedItemsVertical.Contains(effecter.upItem))
-            {
-                effecter.matchedItemsVertical.Add(effecter.upItem);
-            }
-            if (effecter.upItem.upItem != null && effecter.upItem.upItem.CategoryId == effecter.CategoryId)
-            {
-                if (!effecter.matchedItemsVertical.Contains(effecter.upItem.upItem))
-                {
-                    effecter.matchedItemsVertical.Add(effecter.upItem.upItem);
-                }
-            }
-            if (!effecter.matchedItemsVertical.Contains(effecter))
-            {
-                effecter.matchedItemsVertical.Add(effecter);
-            }
-        }
-        if (effecter.downItem != null && effecter.downItem.CategoryId == effecter.CategoryId)
-        {
-            if (!effecter.matchedItemsVertical.Contains(effecter.downItem))
-            {
-                effecter.matchedItemsVertical.Add(effecter.downItem);
-            }
-
-            if (effecter.downItem.downItem != null && effecter.downItem.downItem.CategoryId == effecter.CategoryId)
-            {
-                if (!effecter.matchedItemsVertical.Contains(effecter.downItem.downItem))
-                {
-                    effecter.matchedItemsVertical.Add(effecter.downItem.downItem);
-                }
-
-            }
-            if (!effecter.matchedItemsVertical.Contains(effecter))
-            {
-                effecter.matchedItemsVertical.Add(effecter);
-            }
-        }
-
-        Debug.Log("CheckMatches");
-
-
-        StartCoroutine(DestoryMatchedObjectList(effecter, effected, isReverse));
+        StartCoroutine(DestoryMatchedObjectList(effecter, effected, moveDirection, isReverse));
     }
 
 
 
-    public IEnumerator DestoryMatchedObjectList(SpawnedItem effecter, SpawnedItem effected, bool isReverse)
+    public IEnumerator DestoryMatchedObjectList(SpawnedItem effecter, SpawnedItem effected, int moveDirection, bool isReverse)
     {
-        yield return new WaitForSecondsRealtime(0.01f);
-        if (effecter.matchedItemsVertical.Count >= 3)
+        destroyedObjectsList.Clear();
+
+        if (effecter.matchedItemsVerticalList.Count >= 3)
         {
             ismatchingFound = true;
-            foreach (var item in effecter.matchedItemsVertical)
-            {
-                if (!destroyedObjectsList.Contains(item))
-                {
-                    destroyedObjectsList.Add(item);
-                }
-
-            }
-        }
-
-        if (effecter.matchedItemsHorizontonal.Count >= 3)
-        {
-            ismatchingFound = true;
-            foreach (var item in effecter.matchedItemsHorizontonal)
+            foreach (var item in effecter.matchedItemsVerticalList)
             {
                 if (!destroyedObjectsList.Contains(item))
                 {
@@ -378,8 +298,45 @@ public class MoveManager : MonoBehaviour
                 }
             }
         }
-        Debug.Log("DestroyObjectsCheck");
+
+        if (effected.matchedItemsVerticalList.Count >= 3)
+        {
+            ismatchingFound = true;
+            foreach (var item in effected.matchedItemsVerticalList)
+            {
+                if (!destroyedObjectsList.Contains(item))
+                {
+                    destroyedObjectsList.Add(item);
+                }
+            }
+        }
+
+        if (effecter.matchedItemsHorizontonalList.Count >= 3)
+        {
+            ismatchingFound = true;
+            foreach (var item in effecter.matchedItemsHorizontonalList)
+            {
+                if (!destroyedObjectsList.Contains(item))
+                {
+                    destroyedObjectsList.Add(item);
+                }
+            }
+        }
+
+        if (effected.matchedItemsHorizontonalList.Count >= 3)
+        {
+            ismatchingFound = true;
+            foreach (var item in effected.matchedItemsHorizontonalList)
+            {
+                if (!destroyedObjectsList.Contains(item))
+                {
+                    destroyedObjectsList.Add(item);
+                }
+            }
+        }
+
         yield return new WaitForSecondsRealtime(switchingTime);
+
         if (!isReverse)
         {
             if (ismatchingFound)
@@ -389,31 +346,40 @@ public class MoveManager : MonoBehaviour
                     item.gameObject.GetComponent<SpriteRenderer>().sprite = blank;
                     item.CategoryId = 0;
                 }
+                EventManager.Instance.SomeObjectsDestroyed(destroyedObjectsList);
+                ismatchingFound = false;
             }
             else if (!ismatchingFound)
             {
+                Debug.Log("Reverse");
                 switch (moveDirection)
                 {
                     case 1:
                         EventManager.Instance.MoveItems(effecter, effected, 2, true);
+                        Debug.Log(moveDirection);
                         break;
                     case 2:
                         EventManager.Instance.MoveItems(effecter, effected, 1, true);
+                        Debug.Log(moveDirection);
                         break;
                     case 3:
                         EventManager.Instance.MoveItems(effecter, effected, 4, true);
+                        Debug.Log(moveDirection);
                         break;
                     case 4:
                         EventManager.Instance.MoveItems(effecter, effected, 3, true);
+                        Debug.Log(moveDirection);
                         break;
                     default:
                         break;
                 }
             }
-            Debug.Log("Reverse");
+        }
+        else if (isReverse)
+        {
+            FindObjectOfType<SelectManager>().moving = false;
         }
 
-        FindObjectOfType<SelectManager>().moving = false;
     }
 
 

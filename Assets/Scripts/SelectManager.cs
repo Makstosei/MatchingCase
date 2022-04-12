@@ -35,12 +35,12 @@ public class SelectManager : MonoBehaviour
         {
             currentPos = Input.mousePosition;
             Vector2 Distance = firstPressPos - currentPos;
-            if (!stopTouch&&!moving && selectedObject != null)
+            if (!stopTouch && !moving && selectedObject != null)
             {
-                
+
                 if (Mathf.Abs(Distance.x) >= Mathf.Abs(Distance.y))
                 {
-                    if (Distance.x < -swipeRange && selectedObject.rightItem != null )
+                    if (Distance.x < -swipeRange && selectedObject.rightItem != null)
                     {
                         moving = true;
                         EventManager.Instance.MoveItems(selectedObject, selectedObject.rightItem, 2, false);

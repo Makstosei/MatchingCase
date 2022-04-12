@@ -211,7 +211,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 11
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -293,7 +293,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 10
+    OrthographicSize: 11
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -388,10 +388,11 @@ MonoBehaviour:
   - {fileID: 9158690723910895489, guid: 12f5cd4db703f5c4886e88e2dbce822b, type: 3}
   - {fileID: 3733484262434762293, guid: 6ff76f1201f0703429ef59428a565869, type: 3}
   - {fileID: 8025292849988412715, guid: c2b22cd5a520bed499faa0083ed11c44, type: 3}
-  xLenght: 8
-  Ylenght: 8
+  YLenght: 8
+  XLenght: 8
   SpawnedObjectParent: {fileID: 1096282403}
   Columns: []
+  UpdateColumnIdList: []
 --- !u!4 &1172813396
 Transform:
   m_ObjectHideFlags: 0
@@ -457,6 +458,7 @@ MonoBehaviour:
   effecterrightItem: {fileID: 0}
   effecterupItem: {fileID: 0}
   effecterdownItem: {fileID: 0}
+  effecterTemp: {fileID: 0}
   effecterParent: {fileID: 0}
   effecterPosition: {x: 0, y: 0, z: 0}
   effectedItemId: 0
@@ -467,6 +469,7 @@ MonoBehaviour:
   effectedrightItem: {fileID: 0}
   effectedupItem: {fileID: 0}
   effecteddownItem: {fileID: 0}
+  effectedTemp: {fileID: 0}
   effectedParent: {fileID: 0}
   effectedPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &1527744748
