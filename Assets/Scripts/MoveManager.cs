@@ -8,25 +8,24 @@ public class MoveManager : MonoBehaviour
     public Sprite blank;
     public float switchingTime = 0.5f;
     private bool ismatchingFound;
-    private int moveDirection;
     public List<SpawnedItem> destroyedObjectsList;
     private List<Spawner.ColumnClass> Columns;
 
-    public int effecterItemId;
-    public int effecterCategoryId;
-    public int effecterColumnId;
-    public int effecterColumnPosition;
-    public SpawnedItem effecterleftItem, effecterrightItem, effecterupItem, effecterdownItem, effecterTemp;
-    public Transform effecterParent;
-    public Vector3 effecterPosition;
+    private int effecterItemId;
+    private int effecterCategoryId;
+    private int effecterColumnId;
+    private int effecterColumnPosition;
+    private SpawnedItem effecterleftItem, effecterrightItem, effecterupItem, effecterdownItem, effecterTemp;
+    private Transform effecterParent;
+    private Vector3 effecterPosition;
 
-    public int effectedItemId;
-    public int effectedCategoryId;
-    public int effectedColumnId;
-    public int effectedColumnPosition;
-    public SpawnedItem effectedleftItem, effectedrightItem, effectedupItem, effecteddownItem, effectedTemp;
-    public Transform effectedParent;
-    public Vector3 effectedPosition;
+    private int effectedItemId;
+    private int effectedCategoryId;
+    private int effectedColumnId;
+    private int effectedColumnPosition;
+    private SpawnedItem effectedleftItem, effectedrightItem, effectedupItem, effecteddownItem, effectedTemp;
+    private Transform effectedParent;
+    private Vector3 effectedPosition;
     private void OnEnable()
     {
         EventManager.onMoveItems += MoveItems;
@@ -65,7 +64,6 @@ public class MoveManager : MonoBehaviour
         effectedPosition = effected.transform.position;
         effectedTemp = effected;
     }
-
     void SetValuesEffecter(SpawnedItem effecter)
     {
         effecter.ItemId = effecterItemId;
@@ -84,7 +82,6 @@ public class MoveManager : MonoBehaviour
         effected.transform.parent = effecterParent;
         effected.name = ("[" + (effected.ColumnId) + "," + (effected.ColumnPosition) + "]");
     }
-
 
     void MoveItems(SpawnedItem effecter, SpawnedItem effected, int moveDirection, bool isReverse)
     {
@@ -271,7 +268,6 @@ public class MoveManager : MonoBehaviour
         CheckMatches(effecter, effected, moveDirection, isReverse);
     }
 
-
     void CheckMatches(SpawnedItem effecter, SpawnedItem effected, int moveDirection, bool isReverse)
     {
 
@@ -280,8 +276,6 @@ public class MoveManager : MonoBehaviour
 
         StartCoroutine(DestoryMatchedObjectList(effecter, effected, moveDirection, isReverse));
     }
-
-
 
     public IEnumerator DestoryMatchedObjectList(SpawnedItem effecter, SpawnedItem effected, int moveDirection, bool isReverse)
     {
@@ -347,6 +341,7 @@ public class MoveManager : MonoBehaviour
                     item.CategoryId = 0;
                 }
                 EventManager.Instance.SomeObjectsDestroyed(destroyedObjectsList);
+                destroyedObjectsList.Clear();
                 ismatchingFound = false;
             }
             else if (!ismatchingFound)
@@ -356,19 +351,15 @@ public class MoveManager : MonoBehaviour
                 {
                     case 1:
                         EventManager.Instance.MoveItems(effecter, effected, 2, true);
-                        Debug.Log(moveDirection);
                         break;
                     case 2:
                         EventManager.Instance.MoveItems(effecter, effected, 1, true);
-                        Debug.Log(moveDirection);
                         break;
                     case 3:
                         EventManager.Instance.MoveItems(effecter, effected, 4, true);
-                        Debug.Log(moveDirection);
                         break;
                     case 4:
                         EventManager.Instance.MoveItems(effecter, effected, 3, true);
-                        Debug.Log(moveDirection);
                         break;
                     default:
                         break;
@@ -383,6 +374,24 @@ public class MoveManager : MonoBehaviour
     }
 
 
+    
 
+    public void DestroyMatchedItemsAtFall()
+    {
+        if (destroyedObjectsList.Count>=3)
+        {
+            foreach (var item in destroyedObjectsList)
+            {
+                item.gameObject.GetComponent<SpriteRenderer>().sprite = blank;
+                item.CategoryId = 0;
+            }
+            EventManager.Instance.SomeObjectsDestroyed(destroyedObjectsList);
+            destroyedObjectsList.Clear();
+        }else
+        {
+            FindObjectOfType<SelectManager>().moving = false;
+        }
+        StartCoroutine(FindObjectOfType<Spawner>().SpawnNewItems());
+    }
 
 }

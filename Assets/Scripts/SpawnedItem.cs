@@ -13,20 +13,7 @@ public class SpawnedItem : MonoBehaviour
     public SpawnedItem leftItem, rightItem, upItem, downItem;
     public List<SpawnedItem> matchedItemsVerticalList;
     public List<SpawnedItem> matchedItemsHorizontonalList;
-
-
-
-    private int tempItemId, tempCategoryId, tempColumnID, tempColumnPosition;
-    private SpawnedItem tempLeft, tempRight, tempUp, tempDown;
-    private Transform tempParent;
-    public Sprite blank;
-
-
-
     public List<Spawner.ColumnClass> Columns;
-    public bool ismatchingFound;
-    private int moveID;
-    public float switchingTime = 0.5f;
 
 
 
@@ -42,23 +29,67 @@ public class SpawnedItem : MonoBehaviour
 
     void GameStartingEvent()
     {
-        CheckMatcedItems(matchedItemsVerticalList,matchedItemsHorizontonalList);
+        CheckMatcedItems(matchedItemsVerticalList, matchedItemsHorizontonalList);
     }
 
-    //inside movings before take temp values of this item
-    public void CopyValuesToTemp()
+    public void UpdateItemPosition()
     {
-        tempItemId = ItemId;
-        tempCategoryId = CategoryId;
-        tempColumnID = ColumnId;
-        tempColumnPosition = ColumnPosition;
-        tempLeft = leftItem;
-        tempRight = rightItem;
-        tempDown = downItem;
-        tempUp = upItem;
-        tempParent = gameObject.transform.parent;
+        Columns = FindObjectOfType<Spawner>().Columns;
+        ColumnPosition = Columns[ColumnId].Column.IndexOf(this);
     }
 
+    public void UpdateNearItems()
+    {
+        Spawner spawnerRef = FindObjectOfType<Spawner>();
+        Columns = FindObjectOfType<Spawner>().Columns;
+
+        if (ColumnId >= 1 && ColumnPosition <= Columns[ColumnId - 1].Column.Count - 1)
+        {
+            leftItem = Columns[ColumnId - 1].Column[ColumnPosition];
+            leftItem.rightItem = this;
+        }
+        else
+        {
+            leftItem = null;
+        }
+
+
+        if (ColumnId < spawnerRef.XLenght - 1 && ColumnPosition <= Columns[ColumnId + 1].Column.Count - 1)
+        {
+            rightItem = Columns[ColumnId + 1].Column[ColumnPosition];
+            rightItem.leftItem = this;
+        }
+        else
+        {
+            rightItem = null;
+        }
+
+
+
+
+
+        if (ColumnPosition >= 1 && Columns[ColumnId].Column[ColumnPosition - 1] != null)
+        {
+            downItem = Columns[ColumnId].Column[ColumnPosition - 1];
+            downItem.upItem = this;
+        }
+        else
+        {
+            downItem = null;
+        }
+
+
+
+        if (ColumnPosition <= Columns[ColumnId].Column.Count - 2)
+        {
+            upItem = Columns[ColumnId].Column[ColumnPosition+1];
+            upItem.downItem = this;
+        }
+        else
+        {
+            upItem = null;
+        }
+    }
 
     public void CheckMatcedItems(List<SpawnedItem> matchedVerticalItems, List<SpawnedItem> matchedHorizontonalItems)
     {
