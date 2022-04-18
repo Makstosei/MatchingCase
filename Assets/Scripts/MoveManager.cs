@@ -84,7 +84,9 @@ public class MoveManager : MonoBehaviour
     }
 
     void MoveItems(SpawnedItem effecter, SpawnedItem effected, int moveDirection, bool isReverse)
-    {
+    {   
+        DOTween.ClearCachedTweens();
+        DOTween.Clear();
         GetTempValuesEffecter(effecter);
         GetTempValuesEffected(effected);
         Columns = GameObject.Find("GameManager").GetComponent<Spawner>().Columns;
@@ -346,7 +348,6 @@ public class MoveManager : MonoBehaviour
             }
             else if (!ismatchingFound)
             {
-                Debug.Log("Reverse");
                 switch (moveDirection)
                 {
                     case 1:
@@ -387,11 +388,12 @@ public class MoveManager : MonoBehaviour
             }
             EventManager.Instance.SomeObjectsDestroyed(destroyedObjectsList);
             destroyedObjectsList.Clear();
-        }else
+        }
+        else
         {
             FindObjectOfType<SelectManager>().moving = false;
         }
-        StartCoroutine(FindObjectOfType<Spawner>().SpawnNewItems());
+        FindObjectOfType<Spawner>().UpdatePositions();
     }
 
 }

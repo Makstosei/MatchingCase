@@ -166,7 +166,7 @@ public class Spawner : MonoBehaviour
         UpdatePositions();
     }
 
-    void UpdatePositions()
+    public void UpdatePositions()
     {
         foreach (var itemList in Columns)
         {
@@ -194,7 +194,7 @@ public class Spawner : MonoBehaviour
             {
                 for (int i = 0; i < YLenght - column.Column.Count; i++)
                 {
-                    Vector3 SpawnPosition = new Vector3(1.5f * (Columns.IndexOf(column)+1.5f), 1.5f * YLenght + 2, 0);
+                    Vector3 SpawnPosition = new Vector3(1.5f+1.5f * Columns.IndexOf(column), 1.5f * YLenght + 3f, 0);
                     int random = Random.Range(0, ObjectstoSpawn.Count);
                     GameObject newGameObject = Instantiate(ObjectstoSpawn[random], SpawnPosition, Quaternion.identity);
 
